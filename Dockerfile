@@ -10,7 +10,7 @@ ENV RAILS_ENV=production \
 # ---- Build stage ----
 FROM base AS build
 
-RUN apk add --no-cache build-base postgresql-dev curl
+RUN apk add --no-cache build-base postgresql-dev curl yaml-dev
 
 COPY Gemfile ./
 RUN bundle lock && \
@@ -25,7 +25,7 @@ RUN rm -rf tmp/cache vendor/bundle/ruby/*/cache
 # ---- Runtime stage ----
 FROM base AS runtime
 
-RUN apk add --no-cache libpq curl tzdata && \
+RUN apk add --no-cache libpq curl tzdata yaml && \
     adduser -D -h /app rails
 
 COPY --from=build /usr/local/bundle /usr/local/bundle
