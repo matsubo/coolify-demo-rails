@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Coolify Demo Rails</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: #16213e;
+      border-radius: 12px;
+      padding: 3rem;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: #e94560;
+    }
+    .info {
+      text-align: left;
+      background: #0f3460;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+    .info dt {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8892b0;
+      margin-top: 0.75rem;
+    }
+    .info dt:first-child { margin-top: 0; }
+    .info dd {
+      font-size: 1rem;
+      color: #ccd6f6;
+      font-family: "SF Mono", "Fira Code", monospace;
+    }
+    .badge {
+      display: inline-block;
+      background: #e94560;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      margin-top: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Hello from Rails on Coolify!</h1>
+    <p>This app is deployed and managed by <strong>Coolify</strong>.</p>
+
+    <dl class="info">
+      <dt>Ruby</dt>
+      <dd><%= @ruby_version %></dd>
+
+      <dt>Rails</dt>
+      <dd><%= @rails_version %></dd>
+
+      <dt>Server Time</dt>
+      <dd><%= @current_time.strftime("%Y-%m-%d %H:%M:%S %Z") %></dd>
+
+      <dt>Environment</dt>
+      <dd><%= Rails.env %></dd>
+    </dl>
+
+    <span class="badge">RUNNING</span>
+  </div>
+</body>
+</html>
