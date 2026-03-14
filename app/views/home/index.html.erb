@@ -59,6 +59,8 @@
       margin-top: 1.5rem;
       letter-spacing: 0.05em;
     }
+    .ok { color: #64ffda; }
+    .err { color: #e94560; }
   </style>
 </head>
 <body>
@@ -72,6 +74,12 @@
 
       <dt>Rails</dt>
       <dd><%= @rails_version %></dd>
+
+      <dt>Database</dt>
+      <dd><span class="ok"><%= @db_adapter %></span></dd>
+
+      <dt>Redis</dt>
+      <dd><span class="<%= @redis_status == 'Connected' ? 'ok' : 'err' %>"><%= @redis_status %></span></dd>
 
       <dt>Server Time</dt>
       <dd><%= @current_time.strftime("%Y-%m-%d %H:%M:%S %Z") %></dd>
