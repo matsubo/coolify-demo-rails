@@ -3,92 +3,225 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Coolify Demo Rails</title>
+  <title>Local LLM Chat - Coolify Demo</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: #1a1a2e;
       color: #e0e0e0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 2rem 1rem;
     }
-    .card {
-      background: #16213e;
-      border-radius: 12px;
-      padding: 3rem;
-      max-width: 480px;
-      width: 90%;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      text-align: center;
+    .container {
+      max-width: 720px;
+      width: 100%;
     }
     h1 {
       font-size: 1.5rem;
-      margin-bottom: 1.5rem;
       color: #e94560;
+      margin-bottom: 1.5rem;
+      text-align: center;
     }
-    .info {
-      text-align: left;
-      background: #0f3460;
+
+    /* Status cards */
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .status-card {
+      background: #16213e;
       border-radius: 8px;
-      padding: 1.25rem;
-      margin-top: 1rem;
+      padding: 1rem;
+      text-align: center;
     }
-    .info dt {
-      font-size: 0.75rem;
+    .status-card .label {
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: #8892b0;
-      margin-top: 0.75rem;
+      margin-bottom: 0.25rem;
     }
-    .info dt:first-child { margin-top: 0; }
-    .info dd {
-      font-size: 1rem;
-      color: #ccd6f6;
+    .status-card .value {
+      font-size: 0.9rem;
       font-family: "SF Mono", "Fira Code", monospace;
-    }
-    .badge {
-      display: inline-block;
-      background: #e94560;
-      color: #fff;
-      font-size: 0.7rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
-      margin-top: 1.5rem;
-      letter-spacing: 0.05em;
     }
     .ok { color: #64ffda; }
     .err { color: #e94560; }
+
+    /* Models list */
+    .models {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+    }
+    .models h2 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8892b0;
+      margin-bottom: 0.5rem;
+    }
+    .models .model-tag {
+      display: inline-block;
+      background: #0f3460;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      margin: 0.15rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.8rem;
+      color: #ccd6f6;
+    }
+    .models .none { color: #8892b0; font-style: italic; }
+
+    /* Chat area */
+    .chat-box {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .chat-box .empty {
+      color: #8892b0;
+      font-style: italic;
+      text-align: center;
+      padding: 2rem 0;
+    }
+    .msg {
+      margin-bottom: 0.75rem;
+      padding: 0.6rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .msg.user {
+      background: #0f3460;
+      color: #ccd6f6;
+    }
+    .msg.assistant {
+      background: #1a3a5c;
+      color: #e0e0e0;
+      border-left: 3px solid #64ffda;
+    }
+    .msg .role {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8892b0;
+      margin-bottom: 0.25rem;
+    }
+
+    /* Chat form */
+    .chat-form {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .chat-form input[type="text"] {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid #0f3460;
+      background: #16213e;
+      color: #ccd6f6;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .chat-form input[type="text"]:focus {
+      border-color: #64ffda;
+    }
+    .chat-form button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      background: #e94560;
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .chat-form button:hover {
+      background: #c73652;
+    }
+
+    /* Info footer */
+    .info-footer {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #8892b0;
+    }
+    .info-footer span { margin: 0 0.5rem; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Hello from Rails on Coolify!</h1>
-    <p>This app is deployed and managed by <strong>Coolify</strong>.</p>
+  <div class="container">
+    <h1>Local LLM Chat</h1>
 
-    <dl class="info">
-      <dt>Ruby</dt>
-      <dd><%= @ruby_version %></dd>
+    <!-- Status cards -->
+    <div class="status-grid">
+      <div class="status-card">
+        <div class="label">Database</div>
+        <div class="value ok"><%= @db_adapter %></div>
+      </div>
+      <div class="status-card">
+        <div class="label">Redis</div>
+        <div class="value <%= @redis_status == 'Connected' ? 'ok' : 'err' %>"><%= @redis_status %></div>
+      </div>
+      <div class="status-card">
+        <div class="label">Ollama</div>
+        <div class="value <%= @ollama_status == 'Connected' ? 'ok' : 'err' %>"><%= @ollama_status %></div>
+      </div>
+    </div>
 
-      <dt>Rails</dt>
-      <dd><%= @rails_version %></dd>
+    <!-- Available models -->
+    <div class="models">
+      <h2>Available Models</h2>
+      <% if @ollama_models.any? %>
+        <% @ollama_models.each do |model| %>
+          <span class="model-tag"><%= model %></span>
+        <% end %>
+      <% else %>
+        <span class="none">No models loaded. Run: docker exec ollama ollama pull tinyllama</span>
+      <% end %>
+    </div>
 
-      <dt>Database</dt>
-      <dd><span class="ok"><%= @db_adapter %></span></dd>
+    <!-- Chat messages -->
+    <div class="chat-box">
+      <% if @messages.empty? %>
+        <div class="empty">No messages yet. Start a conversation!</div>
+      <% else %>
+        <% @messages.each do |msg| %>
+          <div class="msg <%= msg.role %>">
+            <div class="role"><%= msg.role %></div>
+            <%= msg.content %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
 
-      <dt>Redis</dt>
-      <dd><span class="<%= @redis_status == 'Connected' ? 'ok' : 'err' %>"><%= @redis_status %></span></dd>
+    <!-- Chat form -->
+    <%= form_tag("/chat", method: :post, class: "chat-form") do %>
+      <input type="text" name="prompt" placeholder="Type a message..." autocomplete="off" autofocus>
+      <button type="submit">Send</button>
+    <% end %>
 
-      <dt>Server Time</dt>
-      <dd><%= @current_time.strftime("%Y-%m-%d %H:%M:%S %Z") %></dd>
-
-      <dt>Environment</dt>
-      <dd><%= Rails.env %></dd>
-    </dl>
-
-    <span class="badge">RUNNING</span>
+    <!-- Footer -->
+    <div class="info-footer">
+      <span>Ruby <%= @ruby_version %></span>
+      <span>Rails <%= @rails_version %></span>
+      <span><%= @current_time.strftime("%Y-%m-%d %H:%M:%S %Z") %></span>
+      <span><%= Rails.env %></span>
+    </div>
   </div>
 </body>
 </html>
